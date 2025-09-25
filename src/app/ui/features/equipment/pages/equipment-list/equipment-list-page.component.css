@@ -1,0 +1,5 @@
+/* estilos básicos para la página de lista de equipos */
+:host {
+  display: block;
+  padding: 1rem;
+}

@@ -1,0 +1,9 @@
+<h2>Lista de Equipos</h2>
+
+<!-- Usamos el componente tabla -->
+<app-equipment-table [data]="equipments()"></app-equipment-table>
+
+
+<!-- Mensajes de estado -->
+<div *ngIf="loading()">Cargando equipos...</div>
+<div *ngIf="error()">{{ error() }}</div>
