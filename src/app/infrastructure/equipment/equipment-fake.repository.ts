@@ -4,7 +4,6 @@ import { EquipmentRepository } from '../../domain/repositories/equipment.reposit
 
 @Injectable({ providedIn: 'root' })
 export class EquipmentFakeRepository implements EquipmentRepository {
-    
   // Datos de prueba (6 equipos)
   private equipments: Equipment[] = [
     new Equipment(
@@ -82,27 +81,26 @@ export class EquipmentFakeRepository implements EquipmentRepository {
   ];
 
   async getAll(): Promise<Equipment[]> {
-    return Promise.resolve(this.equipments);
+    return this.equipments;
   }
 
   async getById(id: string): Promise<Equipment | null> {
-    const eq = this.equipments.find(e => e.id === id);
-    return Promise.resolve(eq ?? null);
+    const eq = this.equipments.find(e => e.id === id) ?? null;
+    return eq;
   }
 
   async create(equipment: Equipment): Promise<void> {
     this.equipments.push(equipment);
-    return Promise.resolve();
   }
 
   async update(equipment: Equipment): Promise<void> {
     const index = this.equipments.findIndex(e => e.id === equipment.id);
-    if (index !== -1) this.equipments[index] = equipment;
-    return Promise.resolve();
+    if (index !== -1) {
+      this.equipments[index] = equipment;
+    }
   }
 
   async delete(id: string): Promise<void> {
     this.equipments = this.equipments.filter(e => e.id !== id);
-    return Promise.resolve();
   }
 }

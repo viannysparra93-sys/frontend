@@ -1,11 +1,19 @@
 import { InjectionToken } from '@angular/core';
+import { environment } from '../../../environments/environment';
 
-//  Definimos la forma de la configuración de la app
+// Interfaz de configuración de la app
 export interface AppConfig {
   production: boolean;
   apiUrl: string;
   useFakeApi: boolean;
 }
 
-//  Token que usaremos para inyectar la configuración
+// Token de inyección
 export const APP_CONFIG = new InjectionToken<AppConfig>('app.config');
+
+
+export const APP_CONFIG_VALUE: AppConfig = {
+  production: environment.production,
+  apiUrl: environment.apiUrl,
+  useFakeApi: environment.useFakeApi,
+};
