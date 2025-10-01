@@ -1,7 +1,15 @@
 import { Routes } from '@angular/router';
-import { EquipmentListPageComponent } from './ui/features/equipment/pages/equipment-list/equipment-list-page.component';
+import { EquipmentListPage } from './ui/features/equipment/pages/equipment-list/equipment-list.page';
+import { EquipmentFormPage } from './ui/features/equipment/pages/equipment-form/equipment-form.page';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'equipment', pathMatch: 'full' },
-  { path: 'equipment', component: EquipmentListPageComponent }
+  {
+    path: 'equipment',
+    children: [
+      { path: '', component: EquipmentListPage },
+      { path: 'new', component: EquipmentFormPage },
+      { path: ':id/edit', component: EquipmentFormPage }
+    ]
+  }
 ];

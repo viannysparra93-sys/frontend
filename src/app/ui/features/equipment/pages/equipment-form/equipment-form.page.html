@@ -1,0 +1,67 @@
+<section class="container">
+  <h2>Registrar / Editar Equipo</h2>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="grid">
+      <label>
+        Asset Tag*
+        <input formControlName="assetTag" />
+        <span class="error" *ngIf="form.controls.assetTag.invalid && form.controls.assetTag.touched">Requerido</span>
+      </label>
+
+      <label>
+        Serial*
+        <input formControlName="serialNumber" />
+      </label>
+
+      <label>
+        Modelo*
+        <input formControlName="model" />
+      </label>
+
+      <label>
+        Tipo*
+        <select formControlName="type">
+          <option value="Laptop">Laptop</option>
+          <option value="Desktop">Desktop</option>
+          <option value="Printer">Printer</option>
+          <option value="Monitor">Monitor</option>
+          <option value="Server">Server</option>
+          <option value="Other">Other</option>
+        </select>
+      </label>
+
+      <label>
+        Estado*
+        <select formControlName="status">
+          <option value="Available">Available</option>
+          <option value="InUse">InUse</option>
+          <option value="InRepair">InRepair</option>
+          <option value="Retired">Retired</option>
+        </select>
+      </label>
+
+      <label>
+        Ubicación*
+        <input formControlName="locationId" />
+      </label>
+
+      <label>
+        Fecha compra*
+        <input type="date" formControlName="purchaseDate" />
+      </label>
+
+      <label>
+        Fin garantía*
+        <input type="date" formControlName="warrantyEnd" />
+      </label>
+    </div>
+
+    <div class="actions">
+      <button type="submit" [disabled]="form.invalid || submitting()">Guardar</button>
+    </div>
+
+    <p *ngIf="error()">{{ error() }}</p>
+    <p *ngIf="success()">Guardado correctamente (simulado)</p>
+  </form>
+</section>

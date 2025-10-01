@@ -14,8 +14,11 @@
       <td>{{ e.id }}</td>
       <td>{{ e.assetTag }}</td>
       <td>{{ e.serialNumber }}</td>
-      <td>{{ e.type }}</td>
-      <td>{{ e.status }}</td>
+
+      // Aquí aplicamos los pipes 
+
+      <td>{{ e.type | typeLabel }}</td>
+<td>{{ e.status | statusLabel }}</td>
       <td>{{ e.locationId }}</td>
     </tr>
   </tbody>
