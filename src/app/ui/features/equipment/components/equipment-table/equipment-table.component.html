@@ -1,3 +1,23 @@
+<!-- Parte de arriba donde va el botón para crear un nuevo equipo -->
+
+<div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+  <button
+    routerLink="/equipment/new"
+    style="
+      background-color: #28a745;
+      color: white;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    "
+  >
+    ➕ Crear equipo
+  </button>
+</div>
+
+<!-- Tabla de equipos -->
 <table border="1" width="100%">
   <thead>
     <tr>
@@ -7,19 +27,59 @@
       <th>Tipo</th>
       <th>Estado</th>
       <th>Ubicación</th>
+      <th>Acciones</th>
     </tr>
   </thead>
+
   <tbody>
+    <!-- Si no hay equipos -->
+    <tr *ngIf="!data || data.length === 0">
+      <td colspan="7" style="text-align: center; color: #666;">
+        No hay equipos registrados
+      </td>
+    </tr>
+
+    <!-- Si hay equipos -->
     <tr *ngFor="let e of data">
       <td>{{ e.id }}</td>
       <td>{{ e.assetTag }}</td>
       <td>{{ e.serialNumber }}</td>
-
-      // Aquí aplicamos los pipes 
-
       <td>{{ e.type | typeLabel }}</td>
-<td>{{ e.status | statusLabel }}</td>
+      <td>{{ e.status | statusLabel }}</td>
       <td>{{ e.locationId }}</td>
+      <td style="text-align: center;">
+        <!-- Botón Editar -->
+        <a
+          [routerLink]="['/equipment', e.id, 'edit']"
+          style="
+            color: white;
+            background-color: #1976d2;
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            text-decoration: none;
+            margin-right: 0.5rem;
+            font-weight: bold;
+          "
+        >
+          Editar
+        </a>
+
+        <!-- Botón Eliminar -->
+        <button
+          (click)="onDelete(e.id)"
+          style="
+            background-color: #dc3545;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+          "
+        >
+          Eliminar
+        </button>
+      </td>
     </tr>
   </tbody>
 </table>

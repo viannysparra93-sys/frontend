@@ -1,24 +1,31 @@
 <section class="container">
-  <h2>Registrar / Editar Equipo</h2>
+  <!-- Título dinámico según si es nuevo o edición -->
+  <h2>{{ isEdit ? 'Editar Equipo' : 'Registrar Equipo' }}</h2>
 
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <div class="grid">
       <label>
         Asset Tag*
         <input formControlName="assetTag" />
-        <span class="error" *ngIf="form.controls.assetTag.invalid && form.controls.assetTag.touched">Requerido</span>
+        <span class="error" *ngIf="form.controls.assetTag.invalid && form.controls.assetTag.touched">
+          Requerido
+        </span>
       </label>
 
       <label>
         Serial*
         <input formControlName="serialNumber" />
-        <span class="error" *ngIf="form.controls.serialNumber.invalid && form.controls.serialNumber.touched">Requerido</span>
+        <span class="error" *ngIf="form.controls.serialNumber.invalid && form.controls.serialNumber.touched">
+          Requerido
+        </span>
       </label>
 
       <label>
         Modelo*
         <input formControlName="model" />
-        <span class="error" *ngIf="form.controls.model.invalid && form.controls.model.touched">Requerido</span>
+        <span class="error" *ngIf="form.controls.model.invalid && form.controls.model.touched">
+          Requerido
+        </span>
       </label>
 
       <label>
@@ -46,30 +53,40 @@
       <label>
         Ubicación*
         <input formControlName="locationId" />
-        <span class="error" *ngIf="form.controls.locationId.invalid && form.controls.locationId.touched">Requerido</span>
+        <span class="error" *ngIf="form.controls.locationId.invalid && form.controls.locationId.touched">
+          Requerido
+        </span>
       </label>
 
       <label>
         Fecha compra*
         <input type="date" formControlName="purchaseDate" />
-        <span class="error" *ngIf="form.controls.purchaseDate.invalid && form.controls.purchaseDate.touched">Requerido</span>
+        <span class="error" *ngIf="form.controls.purchaseDate.invalid && form.controls.purchaseDate.touched">
+          Requerido
+        </span>
       </label>
 
       <label>
         Fin garantía*
         <input type="date" formControlName="warrantyEnd" />
-        <span class="error" *ngIf="form.controls.warrantyEnd.invalid && form.controls.warrantyEnd.touched">Requerido</span>
+        <span class="error" *ngIf="form.controls.warrantyEnd.invalid && form.controls.warrantyEnd.touched">
+          Requerido
+        </span>
       </label>
     </div>
 
     <div class="actions">
-      <button type="submit" [disabled]="form.invalid || submitting()">Guardar</button>
+      <button type="submit" [disabled]="form.invalid || submitting()">
+        {{ isEdit ? 'Actualizar' : 'Guardar' }}
+      </button>
     </div>
 
     <!-- mensajes globales -->
     <div class="messages">
       <p class="error" *ngIf="error()">{{ error() }}</p>
-      <p class="success" *ngIf="success()">Guardado correctamente (simulado)</p>
+      <p class="success" *ngIf="success()">
+        {{ isEdit ? 'Equipo actualizado' : 'Equipo guardado correctamente (simulado)' }}
+      </p>
     </div>
   </form>
 </section>
