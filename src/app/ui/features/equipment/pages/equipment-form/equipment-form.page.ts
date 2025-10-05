@@ -1,11 +1,17 @@
-// Este componente es para registrar o editar equipos.
-// Usa formularios reactivos y validaciones con Angular y Zod.
-// Nota: todavía se podría mejorar el manejo de errores (TODO).
+/*
+ * Este componente permite registrar o editar equipos.
+ * Utiliza formularios reactivos (Reactive Forms), validaciones con Zod,
+ * y conexión con el repositorio y el store para manejar los datos.
+ * 
+ * En modo "crear", asigna un ID incremental automáticamente.
+ * En modo "editar", carga los datos existentes y permite modificarlos
+ * sin tener que volver a escribir toda la información.
+ */
 
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router'; // 👈 Import necesario
+import { ActivatedRoute, Router } from '@angular/router'; // 👈 Router agregado aquí
 import { Equipment } from '../../../../../domain/models/equipment.model';
 import { EquipmentRepository } from '../../../../../domain/repositories/equipment.repository';
 import { EquipmentDTOSchema, EquipmentDTOInput } from '../../schemas/equipment.zod';
@@ -20,21 +26,22 @@ import { ErrorMapper } from '../../../../../core/errors/error-mapper';
   styleUrls: ['./equipment-form.page.css']
 })
 export class EquipmentFormPage {
+
+  // --- Dependencias principales ---
   private fb = inject(FormBuilder);
   private repo = inject(EquipmentRepository);
   private store = inject(EquipmentStore);
   private errorMapper = inject(ErrorMapper);
-  private route = inject(ActivatedRoute); // 👈 para leer la URL
+  private route = inject(ActivatedRoute);
+  private router = inject(Router); // 👈 se usa para navegar al cancelar o guardar
 
-  // Nuevo: bandera para saber si es edición o registro
-  isEdit = false;
-
-  // Estados simples para la UI
+  // --- Señales de estado (signals) ---
+  isEdit = signal(false);
   submitting = signal(false);
   error = signal<string | null>(null);
   success = signal(false);
 
-  // Formulario con campos obligatorios
+  // --- Formulario reactivo ---
   form = this.fb.group({
     id: this.fb.control<string>(crypto.randomUUID(), { nonNullable: true }),
     assetTag: this.fb.control<string>('', { nonNullable: true, validators: [Validators.required] }),
@@ -49,15 +56,82 @@ export class EquipmentFormPage {
   });
 
   constructor() {
-    // Revisamos si la URL tiene un id → significa que estamos en edición
+    // Si la URL contiene un ID, el formulario se comporta en modo edición
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
-      this.isEdit = true;
-      // TODO: aquí se podría cargar el equipo por id y rellenar el formulario
+      this.isEdit.set(true);
+      this.loadExistingEquipment(id);
     }
   }
 
-  // Enviar formulario
+  /**
+   * Carga los datos del equipo existente y los prellena en el formulario.
+   */
+  private async loadExistingEquipment(id: string): Promise<void> {
+    try {
+      const existing = await this.repo.findById(id);
+      if (!existing) return;
+
+      // Convertimos fechas a formato compatible con el input date
+      const formatDateToInput = (d: Date) => {
+        const date = new Date(d);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      };
+
+      // Llenamos el formulario con los datos existentes
+      this.form.patchValue({
+        id: existing.id,
+        assetTag: existing.assetTag,
+        serialNumber: existing.serialNumber,
+        model: existing.model,
+        type: existing.type as any,
+        status: existing.status as any,
+        locationId: existing.locationId,
+        purchaseDate: formatDateToInput(existing.purchaseDate as any),
+        warrantyEnd: formatDateToInput(existing.warrantyEnd as any),
+        metadata: this.metadataToRecord(existing.metadata)
+      });
+    } catch (error) {
+      console.error('Error cargando equipo existente:', error);
+      this.error.set('No se pudo cargar el equipo para edición.');
+    }
+  }
+
+  /**
+   * Convierte metadata que pueda venir como Map<string, any> a Record<string, unknown>.
+   * Si ya es un objeto, lo retorna tal cual. Si es otra cosa, retorna {}.
+   */
+  private metadataToRecord(m: unknown): Record<string, unknown> {
+    if (!m) return {};
+    if (m instanceof Map) {
+      const obj: Record<string, unknown> = {};
+      for (const [k, v] of m.entries()) {
+        obj[String(k)] = v;
+      }
+      return obj;
+    }
+    if (typeof m === 'object' && !Array.isArray(m)) {
+      return m as Record<string, unknown>;
+    }
+    return {};
+  }
+
+  /**
+   * Calcula el siguiente ID incremental, en caso de crear un nuevo equipo.
+   * Si hay 10 equipos y se crea uno nuevo, su ID será "11".
+   */
+  private async getNextId(): Promise<string> {
+    const all = await this.repo.findAll();
+    const maxId = Math.max(...all.map(eq => Number(eq.id) || 0), 0);
+    return String(maxId + 1);
+  }
+
+  /**
+   * Acción que ocurre al enviar el formulario (crear o actualizar).
+   */
   async onSubmit() {
     this.error.set(null);
     this.success.set(false);
@@ -65,41 +139,58 @@ export class EquipmentFormPage {
 
     try {
       const raw = this.form.getRawValue();
-      console.log('Datos crudos del formulario:', raw); // Debug
+      console.log('Datos del formulario:', raw);
 
-      // Validamos con Zod antes de enviar
+      // Validación con Zod
       const parsed: EquipmentDTOInput = EquipmentDTOSchema.parse(raw);
 
-      // TODO: revisar si conviene validar fechas en otro lado
+      // Conversión de fechas a objetos Date
       const entityLike: any = {
         ...parsed,
         purchaseDate: new Date(parsed.purchaseDate as any),
         warrantyEnd: new Date(parsed.warrantyEnd as any)
       };
 
-      // Guardar en el repositorio (por ahora siempre create)
-      await this.repo.create(entityLike as Equipment);
+      if (this.isEdit()) {
+        // Actualización
+        await this.repo.update(entityLike as Equipment);
+      } else {
+        // Asignar ID incremental para nuevo registro
+        entityLike.id = await this.getNextId();
+        await this.repo.create(entityLike as Equipment);
+      }
 
-      // Refrescar la lista
+      // Refrescamos la lista
       if (typeof this.store.fetchAll === 'function') {
         await this.store.fetchAll();
       }
 
       this.success.set(true);
       this.form.markAsPristine();
+
     } catch (e: any) {
-      console.error('Error al guardar equipo:', e); // Debug
+      console.error('Error al guardar equipo:', e);
+
       if (e.errors) {
-        // Errores de Zod (ej: campos inválidos)
+        // Errores de validación de Zod
         this.error.set(
           e.errors.map((err: any) => `${err.path.join('.')}: ${err.message}`).join(' | ')
         );
       } else {
-        // Errores de negocio / red
+        // Errores generales
         this.error.set(this.errorMapper.toMessage(e));
       }
+
     } finally {
       this.submitting.set(false);
     }
+  }
+
+  /**
+   * Acción para cancelar y volver al listado de equipos.
+   * Usamos un método público para no exponer directamente la propiedad 'router' en el HTML.
+   */
+  public onCancel(): void {
+    this.router.navigate(['/equipment']);
   }
 }

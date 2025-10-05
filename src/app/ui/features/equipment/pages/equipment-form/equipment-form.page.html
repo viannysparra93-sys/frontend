@@ -1,33 +1,52 @@
-<section class="container">
-  <!-- Título dinámico según si es nuevo o edición -->
-  <h2>{{ isEdit ? 'Editar Equipo' : 'Registrar Equipo' }}</h2>
+<!--
+  Formulario de registro y edición de equipos.
+  Muestra los datos de un equipo cuando se edita, o un formulario vacío cuando se crea uno nuevo.
+-->
 
+<section class="container">
+
+  <!-- Título dinámico: cambia según el modo -->
+  <h2>{{ isEdit() ? 'Editar Equipo' : 'Registrar Equipo' }}</h2>
+
+  <!-- Formulario principal -->
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
     <div class="grid">
+
+      <!-- Campo ID: visible pero solo lectura en modo edición -->
+      <label>
+        ID
+        <input formControlName="id" [readonly]="isEdit()" />
+      </label>
+
+      <!-- Asset Tag -->
       <label>
         Asset Tag*
-        <input formControlName="assetTag" />
+        <input formControlName="assetTag" placeholder="Ej: LT-0234" />
         <span class="error" *ngIf="form.controls.assetTag.invalid && form.controls.assetTag.touched">
           Requerido
         </span>
       </label>
 
+      <!-- Serial -->
       <label>
         Serial*
-        <input formControlName="serialNumber" />
+        <input formControlName="serialNumber" placeholder="Ej: SN-987654" />
         <span class="error" *ngIf="form.controls.serialNumber.invalid && form.controls.serialNumber.touched">
           Requerido
         </span>
       </label>
 
+      <!-- Modelo -->
       <label>
         Modelo*
-        <input formControlName="model" />
+        <input formControlName="model" placeholder="Ej: HP EliteBook" />
         <span class="error" *ngIf="form.controls.model.invalid && form.controls.model.touched">
           Requerido
         </span>
       </label>
 
+      <!-- Tipo -->
       <label>
         Tipo*
         <select formControlName="type">
@@ -36,28 +55,31 @@
           <option value="Printer">Printer</option>
           <option value="Monitor">Monitor</option>
           <option value="Server">Server</option>
-          <option value="Other">Other</option>
+          <option value="Other">Otro</option>
         </select>
       </label>
 
+      <!-- Estado -->
       <label>
         Estado*
         <select formControlName="status">
-          <option value="Available">Available</option>
-          <option value="InUse">InUse</option>
-          <option value="InRepair">InRepair</option>
-          <option value="Retired">Retired</option>
+          <option value="Available">Disponible</option>
+          <option value="InUse">En uso</option>
+          <option value="InRepair">En reparación</option>
+          <option value="Retired">Retirado</option>
         </select>
       </label>
 
+      <!-- Ubicación -->
       <label>
         Ubicación*
-        <input formControlName="locationId" />
+        <input formControlName="locationId" placeholder="Ej: Sala 302" />
         <span class="error" *ngIf="form.controls.locationId.invalid && form.controls.locationId.touched">
           Requerido
         </span>
       </label>
 
+      <!-- Fecha compra -->
       <label>
         Fecha compra*
         <input type="date" formControlName="purchaseDate" />
@@ -66,6 +88,7 @@
         </span>
       </label>
 
+      <!-- Fin garantía -->
       <label>
         Fin garantía*
         <input type="date" formControlName="warrantyEnd" />
@@ -75,17 +98,24 @@
       </label>
     </div>
 
+    <!-- Botones -->
     <div class="actions">
+      <!-- Botón principal -->
       <button type="submit" [disabled]="form.invalid || submitting()">
-        {{ isEdit ? 'Actualizar' : 'Guardar' }}
+        {{ isEdit() ? 'Actualizar' : 'Guardar' }}
+      </button>
+
+      <!-- Botón de cancelar (ya corregido) -->
+      <button type="button" class="cancel" (click)="onCancel()">
+        Cancelar
       </button>
     </div>
 
-    <!-- mensajes globales -->
+    <!-- Mensajes de estado -->
     <div class="messages">
       <p class="error" *ngIf="error()">{{ error() }}</p>
       <p class="success" *ngIf="success()">
-        {{ isEdit ? 'Equipo actualizado' : 'Equipo guardado correctamente (simulado)' }}
+        {{ isEdit() ? 'Equipo actualizado correctamente' : 'Equipo registrado exitosamente' }}
       </p>
     </div>
   </form>

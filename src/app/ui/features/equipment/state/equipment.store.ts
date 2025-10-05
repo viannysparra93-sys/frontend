@@ -1,57 +1,63 @@
+// Servicio de estado (Store) que maneja los equipos en memoria.
+// Se encarga de conectar la UI con el repositorio de datos (FakeRepository).
+// Implementa operaciones CRUD y filtros sin depender de un backend real.
+
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { LoadEquipmentListUseCase } from '../../../../application/use-cases/load-equipment-list.use-case';
 import { Equipment } from '../../../../domain/models/equipment.model';
 import { EquipmentRepository } from '../../../../domain/repositories/equipment.repository';
 
+// Definición de tipos para filtros
 type Status = 'Available' | 'InUse' | 'InRepair' | 'Retired' | 'All';
 type Type = 'Laptop' | 'Desktop' | 'Printer' | 'Monitor' | 'Server' | 'Other' | 'All';
 
 @Injectable({ providedIn: 'root' })
 export class EquipmentStore {
+  // Inyección de dependencias
   private readonly loadList = inject(LoadEquipmentListUseCase);
   private readonly repo = inject(EquipmentRepository);
 
-  // estado base (lista, loading y error)
-  readonly items = signal<Equipment[]>([]);
-  readonly loading = signal(false);
-  readonly error = signal<string | null>(null);
+  // --- ESTADOS BASE ---
+  readonly items = signal<Equipment[]>([]);          // lista de equipos
+  readonly loading = signal(false);                  // indicador de carga
+  readonly error = signal<string | null>(null);      // mensaje de error
 
-  // filtros que vienen de la UI
-  readonly query = signal<string>('');
-  readonly status = signal<Status>('All');
-  readonly type = signal<Type>('All');
+  // --- FILTROS ---
+  readonly query = signal<string>('');               // texto de búsqueda
+  readonly status = signal<Status>('All');           // filtro por estado
+  readonly type = signal<Type>('All');               // filtro por tipo
 
-  // paginación
+  // --- PAGINACIÓN ---
   readonly page = signal<number>(1);
   readonly pageSize = signal<number>(10);
 
-  // total de registros filtrados (no lo guardamos, lo calculamos siempre)
+  // Total de equipos filtrados
   readonly total = computed(() => this.filtered().length);
 
   /**
-   * Cargar todos los equipos (desde el caso de uso)
+   * Carga inicial de equipos (desde el caso de uso).
    */
   async fetchAll() {
     this.loading.set(true);
     this.error.set(null);
     try {
-      const data = await this.loadList.execute(); // trae los equipos
-      this.items.set(data); // guardamos en el estado
-      this.page.set(1); // siempre vuelvo a la primera página
+      const data = await this.loadList.execute();
+      this.items.set(data);
+      this.page.set(1);
     } catch (err: any) {
-      this.error.set(err?.message ?? 'Error inesperado al cargar equipos');
+      this.error.set(err?.message ?? 'Error al cargar equipos');
     } finally {
       this.loading.set(false);
     }
   }
 
   /**
-   * Crear un nuevo equipo
+   * Crear un nuevo equipo.
+   * Se añade al arreglo actual sin recargar todo.
    */
   async create(equipment: Equipment) {
     this.loading.set(true);
     try {
-      // repo debería devolver el equipo creado, si no lo hace, usamos el mismo que mandamos
       const created = (await this.repo.create(equipment)) ?? equipment;
       this.items.update(list => [...list, created]);
     } catch (err: any) {
@@ -62,16 +68,24 @@ export class EquipmentStore {
   }
 
   /**
-   * Actualizar un equipo existente
+   * Actualizar un equipo existente.
+   * Si el ID ya existe en la lista, reemplaza ese equipo por el actualizado.
    */
   async update(equipment: Equipment) {
     this.loading.set(true);
     try {
-      // repo debería devolver el actualizado, si no lo hace, usamos el mismo
       const updated = (await this.repo.update(equipment)) ?? equipment;
+
+      // Actualiza el equipo en la lista local usando la misma instancia update
       this.items.update(list =>
         list.map(e => (e.id === updated.id ? updated : e))
       );
+
+      // Recargamos la lista desde el repositorio (por coherencia)
+      // Esto asegura que la tabla muestre los datos actuales.
+      const refreshed = await this.repo.findAll();
+      this.items.set(refreshed);
+
     } catch (err: any) {
       this.error.set(err?.message ?? 'No se pudo actualizar el equipo');
     } finally {
@@ -80,12 +94,12 @@ export class EquipmentStore {
   }
 
   /**
-   * Eliminar un equipo por su ID
+   * Eliminar un equipo por su ID.
    */
   async delete(id: string) {
     this.loading.set(true);
     try {
-      await this.repo.delete(id); // repo borra, no devuelve nada
+      await this.repo.delete(id);
       this.items.update(list => list.filter(e => e.id !== id));
     } catch (err: any) {
       this.error.set(err?.message ?? 'No se pudo eliminar el equipo');
@@ -95,7 +109,7 @@ export class EquipmentStore {
   }
 
   /**
-   * Filtros (búsqueda, estado, tipo)
+   * Filtra los equipos según la búsqueda, tipo y estado.
    */
   readonly filtered = computed(() => {
     const q = this.query().toLowerCase();
@@ -103,10 +117,11 @@ export class EquipmentStore {
     const t = this.type();
 
     return this.items().filter(equipment => {
-      const byQuery = !q
-        || equipment.assetTag?.toLowerCase().includes(q)
-        || equipment.serialNumber?.toLowerCase().includes(q)
-        || equipment.model?.toLowerCase().includes(q);
+      const byQuery =
+        !q ||
+        equipment.assetTag?.toLowerCase().includes(q) ||
+        equipment.serialNumber?.toLowerCase().includes(q) ||
+        equipment.model?.toLowerCase().includes(q);
 
       const byStatus = s === 'All' || equipment.status === s;
       const byType = t === 'All' || equipment.type === t;
@@ -116,7 +131,7 @@ export class EquipmentStore {
   });
 
   /**
-   * Paginación: datos que se muestran en la página actual
+   * Obtiene los datos que se muestran en la página actual.
    */
   readonly paged = computed(() => {
     const data = this.filtered();
@@ -124,7 +139,7 @@ export class EquipmentStore {
     return data.slice(start, start + this.pageSize());
   });
 
-  // helpers (para que la UI cambie filtros y página)
+  // --- MÉTODOS AUXILIARES ---
   setQuery(q: string) { this.query.set(q); this.page.set(1); }
   setStatus(s: Status) { this.status.set(s); this.page.set(1); }
   setType(t: Type) { this.type.set(t); this.page.set(1); }
