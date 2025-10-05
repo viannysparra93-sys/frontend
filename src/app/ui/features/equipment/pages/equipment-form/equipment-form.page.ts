@@ -1,5 +1,5 @@
 // Componente standalone que implementa un formulario reactivo.
-//  este archivo valida con Zod, mapea a entidad y llama al repositorio.
+// Valida con Angular y con Zod, mapea a entidad y llama al repositorio.
 
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -19,11 +19,11 @@ import { ErrorMapper } from '../../../../../core/errors/error-mapper';
 })
 export class EquipmentFormPage {
   private fb = inject(FormBuilder);
-  private repo = inject(EquipmentRepository); // adapta la ruta si tu repo está en otro lugar
+  private repo = inject(EquipmentRepository); 
   private store = inject(EquipmentStore);
   private errorMapper = inject(ErrorMapper);
 
-  // estados para la UI usando signals
+  // Estados para la UI usando signals
   submitting = signal(false);
   error = signal<string | null>(null);
   success = signal(false);
@@ -50,20 +50,21 @@ export class EquipmentFormPage {
 
     try {
       const raw = this.form.getRawValue();
-      // validamos con Zod (UI)
+
+      // Validamos con Zod
       const parsed: EquipmentDTOInput = EquipmentDTOSchema.parse(raw);
 
-      // mapear fechas a Date si vienen como string
+      // Mapear fechas a Date si vienen como string
       const entityLike: any = {
         ...parsed,
         purchaseDate: new Date(parsed.purchaseDate as any),
         warrantyEnd: new Date(parsed.warrantyEnd as any)
       };
 
-      // llamar al repositorio (create o update)
+      // Llamar al repositorio (create o update)
       await this.repo.create(entityLike as Equipment);
 
-      // refrescar la lista en la store
+      // Refrescar la lista en la store
       if (typeof this.store.fetchAll === 'function') {
         await this.store.fetchAll();
       }
@@ -71,7 +72,14 @@ export class EquipmentFormPage {
       this.success.set(true);
       this.form.markAsPristine();
     } catch (e: any) {
-      this.error.set(this.errorMapper.toMessage(e));
+      // Si el error es de Zod
+      if (e.errors) {
+        this.error.set(
+          e.errors.map((err: any) => `${err.path.join('.')}: ${err.message}`).join(' | ')
+        );
+      } else {
+        this.error.set(this.errorMapper.toMessage(e));
+      }
     } finally {
       this.submitting.set(false);
     }
