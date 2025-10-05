@@ -1,9 +1,11 @@
-// Componente standalone que implementa un formulario reactivo.
-// Valida con Angular y con Zod, mapea a entidad y llama al repositorio.
+// Este componente es para registrar o editar equipos.
+// Usa formularios reactivos y validaciones con Angular y Zod.
+// Nota: todavía se podría mejorar el manejo de errores (TODO).
 
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router'; // 👈 Import necesario
 import { Equipment } from '../../../../../domain/models/equipment.model';
 import { EquipmentRepository } from '../../../../../domain/repositories/equipment.repository';
 import { EquipmentDTOSchema, EquipmentDTOInput } from '../../schemas/equipment.zod';
@@ -19,16 +21,20 @@ import { ErrorMapper } from '../../../../../core/errors/error-mapper';
 })
 export class EquipmentFormPage {
   private fb = inject(FormBuilder);
-  private repo = inject(EquipmentRepository); 
+  private repo = inject(EquipmentRepository);
   private store = inject(EquipmentStore);
   private errorMapper = inject(ErrorMapper);
+  private route = inject(ActivatedRoute); // 👈 para leer la URL
 
-  // Estados para la UI usando signals
+  // Nuevo: bandera para saber si es edición o registro
+  isEdit = false;
+
+  // Estados simples para la UI
   submitting = signal(false);
   error = signal<string | null>(null);
   success = signal(false);
 
-  // FormGroup
+  // Formulario con campos obligatorios
   form = this.fb.group({
     id: this.fb.control<string>(crypto.randomUUID(), { nonNullable: true }),
     assetTag: this.fb.control<string>('', { nonNullable: true, validators: [Validators.required] }),
@@ -42,7 +48,16 @@ export class EquipmentFormPage {
     metadata: this.fb.control<Record<string, unknown>>({}, { nonNullable: true })
   });
 
-  // Manejo del submit
+  constructor() {
+    // Revisamos si la URL tiene un id → significa que estamos en edición
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.isEdit = true;
+      // TODO: aquí se podría cargar el equipo por id y rellenar el formulario
+    }
+  }
+
+  // Enviar formulario
   async onSubmit() {
     this.error.set(null);
     this.success.set(false);
@@ -50,21 +65,22 @@ export class EquipmentFormPage {
 
     try {
       const raw = this.form.getRawValue();
+      console.log('Datos crudos del formulario:', raw); // Debug
 
-      // Validamos con Zod
+      // Validamos con Zod antes de enviar
       const parsed: EquipmentDTOInput = EquipmentDTOSchema.parse(raw);
 
-      // Mapear fechas a Date si vienen como string
+      // TODO: revisar si conviene validar fechas en otro lado
       const entityLike: any = {
         ...parsed,
         purchaseDate: new Date(parsed.purchaseDate as any),
         warrantyEnd: new Date(parsed.warrantyEnd as any)
       };
 
-      // Llamar al repositorio (create o update)
+      // Guardar en el repositorio (por ahora siempre create)
       await this.repo.create(entityLike as Equipment);
 
-      // Refrescar la lista en la store
+      // Refrescar la lista
       if (typeof this.store.fetchAll === 'function') {
         await this.store.fetchAll();
       }
@@ -72,12 +88,14 @@ export class EquipmentFormPage {
       this.success.set(true);
       this.form.markAsPristine();
     } catch (e: any) {
-      // Si el error es de Zod
+      console.error('Error al guardar equipo:', e); // Debug
       if (e.errors) {
+        // Errores de Zod (ej: campos inválidos)
         this.error.set(
           e.errors.map((err: any) => `${err.path.join('.')}: ${err.message}`).join(' | ')
         );
       } else {
+        // Errores de negocio / red
         this.error.set(this.errorMapper.toMessage(e));
       }
     } finally {
