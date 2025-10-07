@@ -1,26 +1,28 @@
-// ----------------------------------------------------------
-// Contrato del repositorio de equipos
-// ----------------------------------------------------------
-// Esta clase abstracta define las operaciones básicas (CRUD)
-// que cualquier repositorio de equipos debe implementar.
-// No tiene lógica, solo define el “qué” se puede hacer.
-// ----------------------------------------------------------
+// ============================================================
+// equipment.repository.ts
+// Contrato abstracto que define las operaciones CRUD
+// para la entidad "Equipment" (aplicando el principio DIP).
+// ============================================================
 
 import { Equipment } from '../models/equipment.model';
 
+/**
+ * Interfaz abstracta del repositorio de equipos.
+ * Define las operaciones básicas de CRUD.
+ */
 export abstract class EquipmentRepository {
-  // Obtener todos los equipos registrados
+  // Obtiene todos los equipos disponibles. 
   abstract findAll(): Promise<Equipment[]>;
 
-  // Buscar un equipo específico por su ID
+  // Busca un equipo por su ID. 
   abstract findById(id: string): Promise<Equipment | null>;
 
-  // Crear un nuevo equipo y devolver el que se creó
+  // Crea un nuevo equipo. 
   abstract create(equipment: Equipment): Promise<Equipment>;
 
-  // Actualizar un equipo existente y devolver el actualizado
+  // Actualiza un equipo existente. 
   abstract update(equipment: Equipment): Promise<Equipment>;
 
-  // Eliminar un equipo por ID (aquí no se devuelve nada)
+  // Elimina un equipo por su ID. 
   abstract delete(id: string): Promise<void>;
 }

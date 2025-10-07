@@ -2,10 +2,9 @@
  * Este componente permite registrar o editar equipos.
  * Utiliza formularios reactivos (Reactive Forms), validaciones con Zod,
  * y conexión con el repositorio y el store para manejar los datos.
- * 
  * En modo "crear", asigna un ID incremental automáticamente.
  * En modo "editar", carga los datos existentes y permite modificarlos
- * sin tener que volver a escribir toda la información.
+ * sin tener que volver a escribir toda la informacion
  */
 
 import { Component, inject, signal } from '@angular/core';
@@ -33,7 +32,7 @@ export class EquipmentFormPage {
   private store = inject(EquipmentStore);
   private errorMapper = inject(ErrorMapper);
   private route = inject(ActivatedRoute);
-  private router = inject(Router); // 👈 se usa para navegar al cancelar o guardar
+  private router = inject(Router); 
 
   // --- Señales de estado (signals) ---
   isEdit = signal(false);
@@ -141,7 +140,7 @@ export class EquipmentFormPage {
       const raw = this.form.getRawValue();
       console.log('Datos del formulario:', raw);
 
-      // Validación con Zod
+      // Validación con Zod antes de enviar
       const parsed: EquipmentDTOInput = EquipmentDTOSchema.parse(raw);
 
       // Conversión de fechas a objetos Date

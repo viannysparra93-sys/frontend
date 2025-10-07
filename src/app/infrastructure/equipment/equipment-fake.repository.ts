@@ -1,18 +1,10 @@
-// Repositorio falso (fake repository) que simula operaciones CRUD
-// sobre una lista de equipos guardados en memoria.
-// Se utiliza para pruebas sin necesidad de un backend real.
-
 import { Injectable } from '@angular/core';
 import { Equipment } from '../../domain/models/equipment.model';
 import { EquipmentRepository } from '../../domain/repositories/equipment.repository';
 
 @Injectable({ providedIn: 'root' })
 export class EquipmentFakeRepository implements EquipmentRepository {
-
-  /**
-   * Lista de equipos almacenados en memoria.
-   * Actúa como una "base de datos temporal".
-   */
+  // Datos en memoria (base de datos simulada)
   private equipments: Equipment[] = [
     new Equipment(
       '1',
@@ -55,7 +47,7 @@ export class EquipmentFakeRepository implements EquipmentRepository {
       'ASSET-004',
       'SN-004',
       'Teclado Logitech',
-      'Accessory', 
+      'Accessory',
       'InUse',
       'LOC-04',
       new Date('2023-02-01'),
@@ -67,7 +59,7 @@ export class EquipmentFakeRepository implements EquipmentRepository {
       'ASSET-005',
       'SN-005',
       'Mouse Genius',
-      'Accessory', 
+      'Accessory',
       'Retired',
       'LOC-05',
       new Date('2020-09-01'),
@@ -88,62 +80,32 @@ export class EquipmentFakeRepository implements EquipmentRepository {
     )
   ];
 
-  
-
-  
-   //Retorna todos los equipos registrados.
-   
+  /** Retorna todos los equipos registrados */
   async findAll(): Promise<Equipment[]> {
-    // Retornamos una copia para evitar modificaciones directas al arreglo.
     return [...this.equipments];
   }
 
-  // Buscar por ID: devolver la instancia original (no un objeto plano)
+  /** Busca un equipo por su ID */
   async findById(id: string): Promise<Equipment | null> {
     const eq = this.equipments.find(e => e.id === id) ?? null;
-    return eq ?? null; // devuelve la instancia Equipment o null
+    return eq;
   }
-  /**
-   * Crea un nuevo equipo y lo agrega al listado.
-   */
+
+  /** Crea un nuevo equipo */
   async create(equipment: Equipment): Promise<Equipment> {
     this.equipments.push(equipment);
     return equipment;
   }
 
-  /**
-   * Actualiza un equipo existente en el arreglo.
-   * Si el equipo no existe, no hace nada.
-   */
+  /** Actualiza un equipo existente */
   async update(equipment: Equipment): Promise<Equipment> {
     const index = this.equipments.findIndex(e => e.id === equipment.id);
-
-    if (index !== -1) {
-      // Actualizamos los datos en memoria
-      this.equipments[index] = equipment;
-    }
-
-    // 🔁 Simulación de "persistencia" y refresco del listado
-    // (esto imita el comportamiento de un backend que devuelve la lista actualizada)
-    await this.refresh();
-
+    if (index !== -1) this.equipments[index] = equipment;
     return equipment;
   }
 
-  /**
-   * Elimina un equipo por su ID.
-   */
+  /** Elimina un equipo */
   async delete(id: string): Promise<void> {
     this.equipments = this.equipments.filter(e => e.id !== id);
-    await this.refresh(); // Refrescamos el estado para mantener coherencia visual
-  }
-
-  /**
-   * Refresca internamente la lista de equipos (simula recarga desde backend).
-   */
-  private async refresh(): Promise<void> {
-    // Simula un pequeño retardo (como una llamada HTTP)
-    await new Promise(resolve => setTimeout(resolve, 100));
-    this.equipments = [...this.equipments]; // fuerza actualización de referencia
   }
 }

@@ -10,7 +10,7 @@ export class LoadEquipmentListUseCase {
 
   // Ejecuta la lógica: obtener todos los equipos del repositorio
   async execute(): Promise<Equipment[]> {
-    // 👇 usamos findAll(), que devuelve un array de equipos
+    //  usamos findAll(), que devuelve un array de equipos
     return await this.repository.findAll();
   }
 }

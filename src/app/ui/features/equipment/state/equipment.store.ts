@@ -93,9 +93,9 @@ export class EquipmentStore {
     }
   }
 
-  /**
-   * Eliminar un equipo por su ID.
-   */
+  
+   // Eliminar un equipo por su ID.
+   
   async delete(id: string) {
     this.loading.set(true);
     try {
@@ -108,9 +108,9 @@ export class EquipmentStore {
     }
   }
 
-  /**
-   * Filtra los equipos según la búsqueda, tipo y estado.
-   */
+  
+   //Filtra los equipos según la búsqueda, tipo y estado.
+   
   readonly filtered = computed(() => {
     const q = this.query().toLowerCase();
     const s = this.status();
@@ -130,9 +130,9 @@ export class EquipmentStore {
     });
   });
 
-  /**
-   * Obtiene los datos que se muestran en la página actual.
-   */
+  
+   // Aplica paginación al resultado filtrado
+   
   readonly paged = computed(() => {
     const data = this.filtered();
     const start = (this.page() - 1) * this.pageSize();
