@@ -1,0 +1,42 @@
+<ion-content class="ion-padding">
+  <section class="maintenance-create container">
+    <h2>Create New Equipment</h2>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <ion-list>
+        <ion-item>
+          <ion-label position="stacked">Asset Tag</ion-label>
+          <ion-input formControlName="assetTag"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Serial Number</ion-label>
+          <ion-input formControlName="serialNumber"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Model</ion-label>
+          <ion-input formControlName="model"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Type</ion-label>
+          <ion-input formControlName="type"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Status</ion-label>
+          <ion-select formControlName="status">
+            <ion-select-option value="active">Active</ion-select-option>
+            <ion-select-option value="maintenance">Maintenance</ion-select-option>
+            <ion-select-option value="retired">Retired</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Location</ion-label>
+          <ion-input formControlName="location"></ion-input>
+        </ion-item>
+      </ion-list>
+
+      <div class="actions ion-margin-top">
