@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <th:block th:replace="~{layout :: site-head}"></th:block>
+</head>
+
+<body>
+
+    <div class="app">
+
+        <aside th:replace="~{layout :: sidebar('horarios')}"></aside>
+
+        <div class="main-wrap">
+
+            <header th:replace="~{layout :: topbar('Asignación de turnos y programación de estudiantes')}"></header>
+
+            <main class="page-content">
+
+                <div class="page-header-title">
+
+                    <h2>
+                        <i class="bi bi-clock"></i>
+                        Gestión de Horarios
+                    </h2>
+
+                    <p>
+                        Asignación de turnos y programación de estudiantes
+                    </p>
+
+                </div>
+
+                <!-- FORMULARIO -->
+
+                <div class="card" style="margin-top:20px;">
+
+                    <div class="card-title" style="margin-bottom:20px;">
+                        Asignar Horario a Estudiante
+                    </div>
+
+                    <form th:action="@{/horarios/guardar}" method="post">
+
+                        <div class="form-grid-inputs">
+
+                            <!-- ESTUDIANTE -->
+
+                            <div class="form-group">
+
+                                <label for="estudiante">
+                                    Estudiante *
+                                </label>
+
+                                <select id="estudiante"
+                                        name="estudianteId"
+                                        class="form-control"
+                                        required>
+
+                                    <option value="">
+                                        Seleccione un estudiante...
+                                    </option>
+
+                                    <option th:each="est : ${estudiantes}"
+                                            th:value="${est.id}"
+                                            th:text="${est.nombres + ' ' + est.apellidos}">
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                            <!-- ÁREA -->
+
+                            <div class="form-group">
+
+                                <label for="area">
+                                    Área Hospitalaria *
+                                </label>
+
+                                <select id="area"
+                                        name="areaId"
+                                        class="form-control"
+                                        required>
+
+                                    <option value="">
+                                        Seleccione el área...
+                                    </option>
+
+                                    <option th:each="a : ${areas}"
+                                            th:value="${a.id}"
+                                            th:text="${a.nombre}">
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                        <!-- TUTOR -->
+
+                        <div class="form-group" style="margin-top:15px;">
+
+                            <label for="tutor">
+                                Tutor Hospitalario *
+                            </label>
+
+                            <select id="tutor"
+                                    name="tutorId"
+                                    class="form-control"
+                                    required>
+
+                                <option value="">
+                                    Seleccione un tutor...
+                                </option>
+
+                                <option th:each="t : ${tutores}"
+                                        th:value="${t.id}"
+                                        th:text="${t.nombre}">
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <!-- FECHAS -->
+
+                        <div class="form-grid-inputs" style="margin-top:20px;">
+
+                            <div class="form-group">
+
+                                <label for="fecha">
+                                    Fecha del Turno *
+                                </label>
+
+                                <input type="date"
+                                       id="fecha"
+                                       name="fecha"
+                                       class="form-control"
+                                       required>
+
+                            </div>
+
+                            <div class="form-grid-inputs" style="margin-bottom:0;">
+
+                                <div class="form-group">
+
+                                    <label for="horaInicio">
+                                        Hora Inicio *
+                                    </label>
+
+                                    <input type="time"
+                                           id="horaInicio"
+                                           name="horaInicio"
+                                           class="form-control"
+                                           required>
+
+                                </div>
+
+                                <div class="form-group">
+
+                                    <label for="horaFin">
+                                        Hora Fin *
+                                    </label>
+
+                                    <input type="time"
+                                           id="horaFin"
+                                           name="horaFin"
+                                           class="form-control"
+                                           required>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- BOTÓN -->
+
+                        <button type="submit"
+                                class="btn btn-primary"
+                                style="margin-top:20px;">
+
+                            <i class="bi bi-save"></i>
+                            Guardar Programación
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+                <!-- TABLA HORARIOS -->
+
+                <div class="card" style="margin-top:24px;">
+
+                    <div class="card-header">
+
+                        <span class="card-title">
+
+                            <i class="bi bi-bell"></i>
+                            Horarios Programados
+
+                        </span>
+
+                        <span class="badge badge-teal-light"
+                              th:text="${#lists.size(detalles)} + ' turnos'">
+                            0 turnos
+                        </span>
+
+                    </div>
+
+                    <div class="table-wrap">
+
+                        <table>
+
+                            <thead>
+
+                                <tr>
+                                    <th>Estudiante</th>
+                                    <th>Área</th>
+                                    <th>Fecha</th>
+                                    <th>Hora Inicio</th>
+                                    <th>Hora Fin</th>
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                <tr th:each="d : ${detalles}">
+
+                                    <td>
+
+                                        <div class="stud-row">
+
+                                            <div class="pill-av"
+                                                 style="background:#cbd5e1;">
+                                                E
+                                            </div>
+
+                                            <span class="stud-name"
+                                                  th:text="${d.programacion.estudiante.nombres + ' ' + d.programacion.estudiante.apellidos}">
+                                                Estudiante
+                                            </span>
+
+                                        </div>
+
+                                    </td>
+
+                                    <td>
+
+                                        <span class="badge badge-teal-light"
+                                              th:text="${d.especialidad.nombre}">
+                                            Área
+                                        </span>
+
+                                    </td>
+
+                                    <td th:text="${d.fecha}">
+                                        2026-05-21
+                                    </td>
+
+                                    <td th:text="${d.horaInicio}">
+                                        07:00
+                                    </td>
+
+                                    <td th:text="${d.horaFin}">
+                                        13:00
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

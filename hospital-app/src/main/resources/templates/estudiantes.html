@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <th:block th:replace="~{layout :: site-head}"></th:block>
+</head>
+
+<body>
+
+    <div class="app">
+
+        <aside th:replace="~{layout :: sidebar('estudiantes')}"></aside>
+
+        <div class="main-wrap">
+
+            <header th:replace="~{layout :: topbar('Gestión de información académica y personal')}"></header>
+
+            <main class="page-content">
+
+                <div class="page-header-flex">
+
+                    <div class="page-header-title">
+
+                        <h2>
+                            <i class="bi bi-mortarboard-fill"></i>
+                            Registro de Estudiantes
+                        </h2>
+
+                        <p>
+                            Gestión de información académica y personal
+                        </p>
+
+                    </div>
+
+                    <button class="btn btn-primary"
+                            onclick="document.getElementById('formularioEstudiante').style.display='block'">
+
+                        <i class="bi bi-plus-circle"></i>
+                        Nuevo Estudiante
+
+                    </button>
+
+                </div>
+
+                <!-- FORMULARIO NUEVO ESTUDIANTE -->
+
+                <div class="card"
+                     id="formularioEstudiante"
+                     style="display:none; margin-bottom:20px;">
+
+                    <div class="card-title"
+                         style="margin-bottom:15px;">
+
+                        <i class="bi bi-person-plus-fill"></i>
+                        Nuevo Estudiante
+
+                    </div>
+
+                    <form th:action="@{/estudiantes/guardar}"
+                          method="post">
+
+                        <div style="display:grid;
+                                    grid-template-columns:1fr 1fr;
+                                    gap:15px;">
+
+                            <div>
+                                <label>Nombres</label>
+
+                                <input type="text"
+                                       name="nombres"
+                                       class="form-control"
+                                       required>
+                            </div>
+
+                            <div>
+                                <label>Apellidos</label>
+
+                                <input type="text"
+                                       name="apellidos"
+                                       class="form-control"
+                                       required>
+                            </div>
+
+                            <div>
+                                <label>Documento</label>
+
+                                <input type="text"
+                                       name="documento"
+                                       class="form-control"
+                                       required>
+                            </div>
+
+                            <div>
+                                <label>Programa</label>
+
+                                <input type="text"
+                                       name="programa"
+                                       class="form-control"
+                                       required>
+                            </div>
+
+                            <div>
+                                <label>Semestre</label>
+
+                                <input type="number"
+                                       name="semestre"
+                                       class="form-control"
+                                       required>
+                            </div>
+
+                            <div>
+
+                                <label>Universidad</label>
+
+                                <select name="universidadId"
+                                        class="form-control"
+                                        required>
+
+                                    <option value="">
+                                        Seleccione una universidad
+                                    </option>
+
+                                    <option th:each="u : ${universidades}"
+                                            th:value="${u.id}"
+                                            th:text="${u.nombre}">
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                        <div style="margin-top:20px;
+                                    display:flex;
+                                    gap:10px;">
+
+                            <button type="submit"
+                                    class="btn btn-primary">
+
+                                <i class="bi bi-save"></i>
+                                Guardar Estudiante
+
+                            </button>
+
+                            <button type="button"
+                                    class="btn"
+                                    onclick="document.getElementById('formularioEstudiante').style.display='none'">
+
+                                <i class="bi bi-x-circle"></i>
+                                Cancelar
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+                <!-- TABLA -->
+
+                <div class="card">
+
+                    <div class="search-container">
+
+                        <div>
+
+                            <span class="card-title">
+
+                                <i class="bi bi-people-fill"></i>
+                                Estudiantes Registrados
+
+                            </span>
+
+                            <span class="badge badge-neutral"
+                                  th:text="${#lists.size(estudiantes)}">
+                                2
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="table-wrap">
+
+                        <table>
+
+                            <thead>
+
+                                <tr>
+                                    <th>Nombre del Estudiante</th>
+                                    <th>Cédula</th>
+                                    <th>Programa / Universidad</th>
+                                    <th>Nivel de Práctica</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                <th:block th:each="estudiante : ${estudiantes}">
+
+                                    <tr>
+
+                                        <td>
+
+                                            <div class="stud-row">
+
+                                                <div class="pill-av"
+                                                     style="background:#09846d; color:white;">
+
+                                                    E
+
+                                                </div>
+
+                                                <div>
+
+                                                    <div class="stud-name"
+                                                         th:text="${estudiante.nombres}">
+                                                        Carlos Andrés
+                                                    </div>
+
+                                                    <div class="stud-id"
+                                                         th:text="'ID: ' + ${estudiante.id}">
+                                                        ID: 1
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                        </td>
+
+                                        <td th:text="${estudiante.documento}">
+                                            1018234567
+                                        </td>
+
+                                        <td>
+
+                                            <div class="stud-name"
+                                                 th:text="${estudiante.programa}">
+                                                Medicina
+                                            </div>
+
+                                            <div class="stud-id"
+                                                 th:text="${estudiante.universidad != null ? estudiante.universidad.nombre : 'Sin universidad'}">
+                                                Universidad
+                                            </div>
+
+                                        </td>
+
+                                        <td>
+
+                                            <span class="badge-med"
+                                                  th:text="${estudiante.semestre}">
+                                                8
+                                            </span>
+
+                                        </td>
+
+                                        <td>
+
+                                            <span class="badge b-green">
+                                                ACTIVO
+                                            </span>
+
+                                        </td>
+
+                                        <td>
+
+                                            <div class="btn-action-group">
+
+                                                <button class="btn-action">
+
+                                                    <i class="bi bi-pencil-square"></i>
+
+                                                </button>
+
+                                                <form th:action="@{/estudiantes/eliminar/{id}(id=${estudiante.id})}"
+                                                      method="post"
+                                                      style="display:inline;">
+
+                                                    <button type="submit"
+                                                            class="btn-action btn-danger">
+
+                                                        <i class="bi bi-trash-fill"></i>
+
+                                                    </button>
+
+                                                </form>
+
+                                            </div>
+
+                                        </td>
+
+                                    </tr>
+
+                                </th:block>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

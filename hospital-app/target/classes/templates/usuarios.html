@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <th:block th:replace="~{layout :: site-head}"></th:block>
+</head>
+
+<body>
+
+    <div class="app">
+
+        <aside th:replace="~{layout :: sidebar('usuarios')}"></aside>
+
+        <div class="main-wrap">
+
+            <header th:replace="~{layout :: topbar('Administración de accesos y permisos del sistema')}"></header>
+
+            <main class="page-content">
+
+                <div class="page-header-flex">
+
+                    <div class="page-header-title">
+
+                        <h2>
+                            <i class="bi bi-people-fill"></i>
+                            Gestión de Usuarios
+                        </h2>
+
+                        <p>
+                            Administración de accesos y permisos del sistema
+                        </p>
+
+                    </div>
+
+                    <a th:href="@{/usuarios/nuevo}"
+                       class="btn btn-primary">
+
+                        + Nuevo Usuario
+
+                    </a>
+
+                </div>
+
+                <div style="display:flex; flex-direction:column; gap:16px;">
+
+                    <!-- LISTA DE USUARIOS -->
+                    <div th:each="u : ${usuarios}"
+                         class="card"
+                         style="display:flex; justify-content:space-between; align-items:center;">
+
+                        <div style="display:flex; gap:16px; align-items:center;">
+
+                            <div class="pill-av"
+                                 style="background:#e0fdf4; color:#047857; width:48px; height:48px; font-size:1.2rem;">
+
+                                <span th:text="${#strings.substring(u.nombre,0,1)}"></span>
+
+                            </div>
+
+                            <div>
+
+                                <div style="display:flex; align-items:center; gap:10px;">
+
+                                    <strong style="font-size:1.05rem;"
+                                            th:text="${u.nombre}">
+                                    </strong>
+
+                                    <span class="badge badge-teal-light"
+                                          th:text="${u.rol}">
+                                    </span>
+
+                                </div>
+
+                                <div class="stud-id">
+                                    Cédula:
+                                    <span th:text="${u.cedula}"></span>
+                                    • Usuario:
+                                    <span th:text="${u.username}"></span>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="btn-action-group">
+
+                            <!-- BOTON EDITAR -->
+                            <button class="btn-action"
+                                    th:attr="data-id=${u.id},
+                                             data-nombre=${u.nombre},
+                                             data-username=${u.username},
+                                             data-cedula=${u.cedula},
+                                             data-rol=${u.rol}"
+                                    onclick="editarUsuario(this)">
+
+                                <i class="bi bi-pencil-square"></i>
+
+                            </button>
+
+                            <!-- BOTON ELIMINAR -->
+                            <form th:action="@{'/usuarios/eliminar/' + ${u.id}}"
+                                  method="post">
+
+                                <button class="btn-action btn-danger"
+                                        type="submit">
+
+                                    <i class="bi bi-trash-fill"></i>
+
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+    <!-- MODAL EDITAR -->
+    <div id="modalUsuario"
+         style="display:none;
+                position:fixed;
+                top:0;
+                left:0;
+                width:100%;
+                height:100%;
+                background:rgba(0,0,0,0.5);
+                justify-content:center;
+                align-items:center;">
+
+        <div style="background:white;
+                    padding:30px;
+                    border-radius:12px;
+                    width:400px;">
+
+            <h3>Editar Usuario</h3>
+
+            <form th:action="@{/usuarios/guardar}"
+                  method="post">
+
+                <input type="hidden"
+                       name="usuarioId"
+                       id="usuarioId">
+
+                <div style="margin-bottom:15px;">
+
+                    <label>Nombre</label>
+
+                    <input type="text"
+                           name="nombre"
+                           id="nombre"
+                           class="form-control"
+                           required>
+
+                </div>
+
+                <div style="margin-bottom:15px;">
+
+                    <label>Username</label>
+
+                    <input type="text"
+                           name="username"
+                           id="username"
+                           class="form-control"
+                           required>
+
+                </div>
+
+                <div style="margin-bottom:15px;">
+
+                    <label>Cédula</label>
+
+                    <input type="text"
+                           name="cedula"
+                           id="cedula"
+                           class="form-control"
+                           required>
+
+                </div>
+
+                <div style="margin-bottom:15px;">
+
+                    <label>Rol</label>
+
+                    <select name="rol"
+                            id="rol"
+                            class="form-control">
+
+                        <option value="ADMINISTRADOR">
+                            ADMINISTRADOR
+                        </option>
+
+                        <option value="USUARIO">
+                            USUARIO
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div style="margin-bottom:15px;">
+
+                    <label>Nueva Contraseña</label>
+
+                    <input type="password"
+                           name="password"
+                           class="form-control">
+
+                </div>
+
+                <div style="display:flex; gap:10px;">
+
+                    <button type="submit"
+                            class="btn btn-primary">
+
+                        Guardar
+
+                    </button>
+
+                    <button type="button"
+                            class="btn btn-danger"
+                            onclick="cerrarModal()">
+
+                        Cancelar
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        function editarUsuario(btn) {
+
+            document.getElementById("usuarioId").value =
+                btn.getAttribute("data-id");
+
+            document.getElementById("nombre").value =
+                btn.getAttribute("data-nombre");
+
+            document.getElementById("username").value =
+                btn.getAttribute("data-username");
+
+            document.getElementById("cedula").value =
+                btn.getAttribute("data-cedula");
+
+            document.getElementById("rol").value =
+                btn.getAttribute("data-rol");
+
+            document.getElementById("modalUsuario").style.display = "flex";
+        }
+
+        function cerrarModal() {
+
+            document.getElementById("modalUsuario").style.display = "none";
+        }
+
+    </script>
+
+</body>
+</html>

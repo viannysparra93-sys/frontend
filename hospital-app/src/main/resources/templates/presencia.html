@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <th:block th:replace="~{layout :: site-head}"></th:block>
+</head>
+
+<body>
+
+    <div class="app">
+
+        <aside th:replace="~{layout :: sidebar('presencia')}"></aside>
+
+        <div class="main-wrap">
+
+            <header th:replace="~{layout :: topbar('Control de ingreso y salida en tiempo real')}"></header>
+
+            <main class="page-content">
+
+                <div class="card">
+
+                    <form th:action="@{/presencia/marcar}"
+                          method="post"
+                          class="attendance-form">
+
+                        <div class="input-wrapper">
+
+                            <input type="text"
+                                   name="cedula"
+                                   class="form-control"
+                                   placeholder="Ingrese número de cédula del estudiante..."
+                                   required>
+
+                        </div>
+
+                        <button type="submit"
+                                name="accion"
+                                value="IN"
+                                class="btn btn-primary">
+
+                            <i class="bi bi-box-arrow-in-right"></i>
+                            Check In
+
+                        </button>
+
+                        <button type="submit"
+                                name="accion"
+                                value="OUT"
+                                class="btn btn-secondary"
+                                style="background:#ef4444; color:white;">
+
+                            <i class="bi bi-box-arrow-right"></i>
+                            Check Out
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+                <div class="stats-grid" style="margin-top:24px;">
+
+                    <!-- HISTORIAL -->
+
+                    <div class="card">
+
+                        <div class="card-header">
+
+                            <span class="card-title">
+
+                                <i class="bi bi-clock-history"></i>
+                                Historial de Movimientos de Hoy
+
+                            </span>
+
+                        </div>
+
+                        <div class="table-wrap">
+
+                            <table>
+
+                                <thead>
+
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Estudiante</th>
+                                        <th>Área Asignada</th>
+                                        <th>Hora Entrada</th>
+                                        <th>Estado</th>
+                                    </tr>
+
+                                </thead>
+
+                                <tbody>
+
+                                    <tr>
+
+                                        <td>2</td>
+
+                                        <td>
+
+                                            <div class="stud-row">
+
+                                                <div class="pill-av"
+                                                     style="background:#e0f2fe; color:#0369a1;">
+
+                                                    M
+
+                                                </div>
+
+                                                <div>
+
+                                                    <div class="stud-name">
+                                                        María Valentina López Herrera
+                                                    </div>
+
+                                                    <div class="stud-id">
+                                                        1052345678
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                        </td>
+
+                                        <td>
+
+                                            <span class="badge badge-sky">
+                                                Pediatría
+                                            </span>
+
+                                        </td>
+
+                                        <td>08:00</td>
+
+                                        <td>
+
+                                            <span class="badge b-green">
+                                                DENTRO
+                                            </span>
+
+                                        </td>
+
+                                    </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                    <!-- CAPACIDAD -->
+
+                    <div class="card">
+
+                        <div class="card-header">
+
+                            <span class="card-title">
+
+                                <i class="bi bi-bar-chart-fill"></i>
+                                Capacidad por Área
+
+                            </span>
+
+                        </div>
+
+                        <div class="progress-item">
+
+                            <div class="progress-labels">
+
+                                <strong>Urgencias</strong>
+                                <span>1/8</span>
+
+                            </div>
+
+                            <div class="progress-bar-bg">
+
+                                <div class="progress-bar-fill"
+                                     style="width: 12.5%;">
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="progress-item">
+
+                            <div class="progress-labels">
+
+                                <strong>Cardiología</strong>
+                                <span>1/5</span>
+
+                            </div>
+
+                            <div class="progress-bar-bg">
+
+                                <div class="progress-bar-fill"
+                                     style="width: 20%;">
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

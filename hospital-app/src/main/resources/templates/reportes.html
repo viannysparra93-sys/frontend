@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <th:block th:replace="~{layout :: site-head}"></th:block>
+</head>
+
+<body>
+
+    <div class="app">
+
+        <aside th:replace="~{layout :: sidebar('reportes')}"></aside>
+
+        <div class="main-wrap">
+
+            <header th:replace="~{layout :: topbar('Horas por estudiante y área')}"></header>
+
+            <main class="page-content">
+
+                <div class="form-inline-grid">
+
+                    <div class="form-group">
+
+                        <label for="fechaInicio">
+                            Fecha Inicio
+                        </label>
+
+                        <input id="fechaInicio"
+                               type="date"
+                               class="form-control"
+                               title="Fecha Inicio">
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="fechaFin">
+                            Fecha Fin
+                        </label>
+
+                        <input id="fechaFin"
+                               type="date"
+                               class="form-control"
+                               title="Fecha Fin">
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="estudiante">
+                            Estudiante
+                        </label>
+
+                        <select id="estudiante"
+                                class="form-control"
+                                title="Estudiante">
+
+                            <option value="all">
+                                Todos
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="btn-action-group">
+
+                        <button class="btn btn-primary">
+                            Filtrar
+                        </button>
+
+                        <button class="btn btn-secondary">
+                            Limpiar
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <div class="stats-grid">
+
+                    <div class="card">
+
+                        <div class="card-header">
+
+                            <span class="card-title">
+                                <i class="fas fa-user-graduate"></i>
+                                Horas por Estudiante
+                            </span>
+
+                        </div>
+
+                        <div class="table-wrap">
+
+                            <table>
+
+                                <thead>
+
+                                    <tr>
+                                        <th>Estudiante</th>
+                                        <th>Programa</th>
+                                        <th>Turnos</th>
+                                        <th>Horas Totales</th>
+                                    </tr>
+
+                                </thead>
+
+                                <tbody>
+
+                                    <tr>
+
+                                        <td>
+
+                                            <div class="stud-row">
+
+                                                <div class="pill-av"
+                                                     style="background:#cbd5e1;">
+                                                    C
+                                                </div>
+
+                                                <div>
+
+                                                    <div class="stud-name">
+                                                        Carlos Andrés Ramírez Torres
+                                                    </div>
+
+                                                    <div class="stud-id">
+                                                        1018234567
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                        </td>
+
+                                        <td style="color:var(--sl-400);">
+                                            Medicina
+                                        </td>
+
+                                        <td>
+                                            <span class="badge badge-med">
+                                                1
+                                            </span>
+                                        </td>
+
+                                        <td class="hours-highlight">
+                                            6.0 h
+                                        </td>
+
+                                    </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                    <div class="card">
+
+                        <div class="card-header">
+
+                            <span class="card-title">
+                                <i class="fas fa-hospital"></i>
+                                Horas por Área
+                            </span>
+
+                        </div>
+
+                        <div class="table-wrap">
+
+                            <table>
+
+                                <thead>
+
+                                    <tr>
+                                        <th>Área</th>
+                                        <th>Turnos</th>
+                                        <th>Horas</th>
+                                    </tr>
+
+                                </thead>
+
+                                <tbody>
+
+                                    <tr>
+
+                                        <td>
+                                            <span class="badge badge-purple">
+                                                Urgencias
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            <span class="badge badge-neutral">
+                                                1
+                                            </span>
+                                        </td>
+
+                                        <td class="hours-highlight">
+                                            6.0 h
+                                        </td>
+
+                                    </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

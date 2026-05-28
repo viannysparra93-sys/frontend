@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <th:block th:replace="~{layout :: site-head}"></th:block>
+</head>
+
+<body>
+
+    <div class="app">
+
+        <aside th:replace="~{layout :: sidebar('dashboard')}"></aside>
+
+        <div class="main-wrap">
+
+            <header th:replace="~{layout :: topbar('Resumen del sistema hospitalario en tiempo real')}"></header>
+
+            <main class="page-content">
+
+                <div class="page-header-flex">
+
+                    <div class="page-header-title">
+
+                        <h2>
+                            <i class="bi bi-speedometer2"></i>
+                            Dashboard General
+                        </h2>
+
+                        <p>
+                            Resumen del sistema hospitalario en tiempo real
+                        </p>
+
+                    </div>
+
+                    <div class="page-header-actions">
+
+                        <a th:href="@{/presencia}" class="btn btn-primary">
+                            <i class="bi bi-person-check"></i>
+                            Panel de Presencia
+                        </a>
+
+                        <a th:href="@{/reportes}" class="btn btn-secondary">
+                            <i class="bi bi-bar-chart"></i>
+                            Ver Reportes
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <div class="stats-grid">
+
+                    <div class="card">
+
+                        <div class="stat-card-inner">
+
+                            <div class="stat-icon-wrapper icon-teal">
+                                <i class="bi bi-mortarboard"></i>
+                            </div>
+
+                            <div class="stat-data">
+
+                                <span class="stat-number"
+                                      th:text="${totalEstudiantes}">
+                                    2
+                                </span>
+
+                                <span class="stat-label">
+                                    Estudiantes Registrados
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="card">
+
+                        <div class="stat-card-inner">
+
+                            <div class="stat-icon-wrapper icon-blue">
+                                <i class="bi bi-person-workspace"></i>
+                            </div>
+
+                            <div class="stat-data">
+
+                                <span class="stat-number"
+                                      th:text="${estudiantesActivos}">
+                                    1
+                                </span>
+
+                                <span class="stat-label">
+                                    En el Hospital Ahora
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="card">
+
+                        <div class="stat-card-inner">
+
+                            <div class="stat-icon-wrapper icon-orange">
+                                <i class="bi bi-building"></i>
+                            </div>
+
+                            <div class="stat-data">
+
+                                <span class="stat-number"
+                                      th:text="${totalAreas}">
+                                    3
+                                </span>
+
+                                <span class="stat-label">
+                                    Áreas Hospitalarias
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="two-col">
+
+                    <div class="card">
+
+                        <div class="card-header">
+
+                            <span class="card-title">
+
+                                <i class="bi bi-people"></i>
+                                Estudiantes Presentes Actualmente
+
+                            </span>
+
+                        </div>
+
+                        <div class="table-wrap">
+
+                            <table>
+
+                                <thead>
+
+                                    <tr>
+                                        <th>Estudiante</th>
+                                        <th>Área</th>
+                                        <th>Hora Ingreso</th>
+                                        <th>Estado</th>
+                                    </tr>
+
+                                </thead>
+
+                                <tbody>
+
+                                    <th:block th:each="p : ${presenciasActivas}">
+
+                                        <tr>
+
+                                            <td>
+
+                                                <div class="stud-row">
+
+                                                    <div class="pill-av"
+                                                         style="background:#e0f2fe; color:#0369a1;">
+
+                                                        M
+
+                                                    </div>
+
+                                                    <div>
+
+                                                        <div class="stud-name"
+                                                             th:text="${p.estudiante.nombre}">
+
+                                                            María Valentina López Herrera
+
+                                                        </div>
+
+                                                        <div class="stud-id"
+                                                             th:text="${p.estudiante.cedula}">
+
+                                                            1052345678
+
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </td>
+
+                                            <td>
+
+                                                <span class="badge badge-sky"
+                                                      th:text="${p.area.nombre}">
+
+                                                    Pediatría
+
+                                                </span>
+
+                                            </td>
+
+                                            <td th:text="${p.horaIngreso}">
+                                                08:00
+                                            </td>
+
+                                            <td>
+
+                                                <span class="badge b-green">
+                                                    DENTRO
+                                                </span>
+
+                                            </td>
+
+                                        </tr>
+
+                                    </th:block>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                    <div class="card">
+
+                        <div class="card-header">
+
+                            <span class="card-title">
+
+                                <i class="bi bi-bar-chart-line"></i>
+                                Capacidad por Área
+
+                            </span>
+
+                        </div>
+
+                        <div class="progress-item">
+
+                            <div class="progress-labels">
+
+                                <strong>Urgencias</strong>
+                                <span class="stud-id">1/8</span>
+
+                            </div>
+
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill"
+                                     style="width:12.5%;">
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="progress-item">
+
+                            <div class="progress-labels">
+
+                                <strong>Cardiología</strong>
+                                <span class="stud-id">1/5</span>
+
+                            </div>
+
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill"
+                                     style="width:20%;">
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="progress-item">
+
+                            <div class="progress-labels">
+
+                                <strong>Pediatría</strong>
+                                <span class="stud-id">1/6</span>
+
+                            </div>
+
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill"
+                                     style="width:16.6%;">
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

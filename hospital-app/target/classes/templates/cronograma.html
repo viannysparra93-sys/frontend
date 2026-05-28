@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <th:block th:replace="~{layout :: site-head}"></th:block>
+</head>
+
+<body>
+
+    <div class="app">
+
+        <aside th:replace="~{layout :: sidebar('cronograma')}"></aside>
+
+        <div class="main-wrap">
+
+            <header th:replace="~{layout :: topbar('Sistema de Gestión Hospitalaria')}"></header>
+
+            <main class="page-content">
+
+                <div class="cronograma-header-actions">
+
+                    <div class="cronograma-title-container">
+
+                        <i class="fas fa-calendar-alt"></i>
+
+                        <h2>
+                            Cronograma por Mes
+                        </h2>
+
+                        <span class="cronograma-month-badge">
+                            Mayo 2026
+                        </span>
+
+                    </div>
+
+                    <button class="btn btn-primary">
+                        + Agregar Horario
+                    </button>
+
+                </div>
+
+                <div class="card">
+
+                    <div class="card-header">
+
+                        <span class="card-title">
+                            <i class="fas fa-calendar-week"></i>
+                            Vista Mensual
+                        </span>
+
+                        <span class="badge badge-teal-light">
+                            4 turnos en total
+                        </span>
+
+                    </div>
+
+                    <div class="table-wrap">
+
+                        <table>
+
+                            <thead>
+
+                                <tr>
+                                    <th>Estudiante</th>
+                                    <th>Área</th>
+                                    <th>Fecha</th>
+                                    <th>Horario de Turno</th>
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                <tr>
+
+                                    <td>
+                                        Carlos Andrés Ramírez Torres
+                                    </td>
+
+                                    <td>
+
+                                        <span class="badge badge-teal-light">
+                                            Urgencias
+                                        </span>
+
+                                    </td>
+
+                                    <td>
+                                        mié, 20 may 2026
+                                    </td>
+
+                                    <td class="time-window">
+                                        07:00 – 13:00
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+                <div class="card" style="margin-top:24px;">
+
+                    <div class="card-header">
+
+                        <span class="card-title">
+                            <i class="fas fa-user"></i>
+                            Vista por Estudiante
+                        </span>
+
+                    </div>
+
+                    <div class="student-schedule-block">
+
+                        <div class="student-schedule-meta">
+
+                            <div class="student-name-group">
+
+                                <strong>
+                                    Carlos Andrés Ramírez Torres
+                                </strong>
+
+                                <span class="student-career">
+                                    Medicina
+                                </span>
+
+                            </div>
+
+                            <span class="badge badge-med">
+                                1 turnos
+                            </span>
+
+                        </div>
+
+                        <div class="student-schedule-row">
+
+                            <div class="date-area-pill">
+
+                                <span>
+                                    20 de may
+                                </span>
+
+                                <span class="badge badge-teal-light">
+                                    Urgencias
+                                </span>
+
+                            </div>
+
+                            <span class="time-window">
+                                07:00 – 13:00
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

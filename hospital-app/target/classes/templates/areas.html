@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <th:block th:replace="~{layout :: site-head}"></th:block>
+</head>
+
+<body>
+
+    <div class="app">
+
+        <aside th:replace="~{layout :: sidebar('areas')}"></aside>
+
+        <div class="main-wrap">
+
+            <header th:replace="~{layout :: topbar('Configuración de especialidades y capacidades')}"></header>
+
+            <main class="page-content">
+
+                <div class="page-header-flex">
+
+                    <div class="page-header-title">
+
+                        <h2>
+                            <i class="bi bi-building"></i>
+                            Gestión de Áreas
+                        </h2>
+
+                        <p>
+                            Configuración de especialidades y capacidades
+                        </p>
+
+                    </div>
+
+                    <button class="btn btn-purple">
+
+                        <i class="bi bi-plus-circle"></i>
+                        Nueva Área
+
+                    </button>
+
+                </div>
+
+                <div class="grid-cards">
+
+                    <!-- CARD 1 -->
+
+                    <div class="card">
+
+                        <div class="card-area-header">
+
+                            <div class="card-area-title">
+
+                                <span>
+                                    <i class="bi bi-hospital"></i>
+                                </span>
+
+                                <strong>Urgencias</strong>
+
+                            </div>
+
+                            <div class="btn-action-group">
+
+                                <button class="btn-action">
+
+                                    <i class="bi bi-pencil-square"></i>
+
+                                </button>
+
+                                <button class="btn-action btn-danger">
+
+                                    <i class="bi bi-trash-fill"></i>
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                        <div class="card-area-body">
+
+                            Capacidad Máxima:
+
+                            <span class="badge badge-purple">
+                                8 estudiantes
+                            </span>
+
+                        </div>
+
+                        <div class="card-area-location">
+
+                            <i class="bi bi-geo-alt-fill"></i>
+                            Piso 1 - Ala Sur
+
+                        </div>
+
+                        <div class="progress-labels"
+                             style="font-size:0.8rem;">
+
+                            <span>Ocupación actual</span>
+                            <span>1/8</span>
+
+                        </div>
+
+                        <div class="progress-bar-bg">
+
+                            <div class="progress-bar-fill"
+                                 style="width:12.5%;">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- CARD 2 -->
+
+                    <div class="card">
+
+                        <div class="card-area-header">
+
+                            <div class="card-area-title">
+
+                                <span>
+                                    <i class="bi bi-heart-pulse-fill"></i>
+                                </span>
+
+                                <strong>Cardiología</strong>
+
+                            </div>
+
+                            <div class="btn-action-group">
+
+                                <button class="btn-action">
+
+                                    <i class="bi bi-pencil-square"></i>
+
+                                </button>
+
+                                <button class="btn-action btn-danger">
+
+                                    <i class="bi bi-trash-fill"></i>
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                        <div class="card-area-body">
+
+                            Capacidad Máxima:
+
+                            <span class="badge badge-purple">
+                                5 estudiantes
+                            </span>
+
+                        </div>
+
+                        <div class="card-area-location">
+
+                            <i class="bi bi-geo-alt-fill"></i>
+                            Torre B
+
+                        </div>
+
+                        <div class="progress-labels"
+                             style="font-size:0.8rem;">
+
+                            <span>Ocupación actual</span>
+                            <span>1/5</span>
+
+                        </div>
+
+                        <div class="progress-bar-bg">
+
+                            <div class="progress-bar-fill"
+                                 style="width:20%;">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
