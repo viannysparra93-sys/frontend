@@ -1,0 +1,37 @@
+{
+  "equipment": [
+    {
+      "id": "1",
+      "name": "Laptop Dell Latitude",
+      "brand": "Dell",
+      "assetTag": "DL-1001",
+      "serialNumber": "SN-AAA111",
+      "purchaseDate": "2022-03-15",
+      "warrantyEnd": "2024-03-15",
+      "isActive": true,
+      "metadata": { "location": "Oficina A", "user": "Juan Perez" }
+    },
+    {
+      "id": "2",
+      "name": "Impresora HP LaserJet",
+      "brand": "HP",
+      "assetTag": "HP-2002",
+      "serialNumber": "SN-BBB222",
+      "purchaseDate": "2021-08-20",
+      "warrantyEnd": "2023-08-20",
+      "isActive": true,
+      "metadata": { "location": "Laboratorio", "user": "Maria Gomez" }
+    },
+    {
+      "id": "3",
+      "name": "Monitor Samsung 24\"",
+      "brand": "Samsung",
+      "assetTag": "SM-3003",
+      "serialNumber": "SN-CCC333",
+      "purchaseDate": "2023-01-10",
+      "warrantyEnd": "2025-01-10",
+      "isActive": false,
+      "metadata": { "location": "Bodega", "user": null }
+    }
+  ]
+}

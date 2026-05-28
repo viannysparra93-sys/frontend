@@ -1,0 +1,54 @@
+<h2>Lista de Equipos</h2>
+
+<!-- Mensajes de carga y error -->
+<div *ngIf="loading()">Cargando equipos...</div>
+<div *ngIf="error()" class="error">{{ error() }}</div>
+
+<!-- Controles de búsqueda y filtros -->
+<div class="filters" *ngIf="!loading() && !error()">
+  <input
+    type="text"
+    placeholder="Buscar por Asset, Serial o Modelo"
+    (input)="onQuery($event)"
+  />
+
+  <!-- Filtro por estado -->
+  <select (change)="onStatus($event)">
+    <option value="All">Todos los estados</option>
+    <option *ngFor="let s of statuses" [value]="s">
+      {{ s | statusLabel }}
+    </option>
+  </select>
+
+  <!-- Filtro por tipo -->
+  <select (change)="onType($event)">
+    <option value="All">Todos los tipos</option>
+    <option *ngFor="let t of types" [value]="t">
+      {{ t | typeLabel }}
+    </option>
+  </select>
+</div>
+
+<!-- Tabla de equipos -->
+<app-equipment-table
+  *ngIf="!loading() && !error()"
+  [data]="paged()"
+></app-equipment-table>
+
+<!-- Controles de paginación -->
+<div class="pagination" *ngIf="!loading() && !error()">
+  <button (click)="previous()" [disabled]="page() === 1">Anterior</button>
+  Página {{ page() }} de {{ totalPages() }}
+  <button (click)="next()" [disabled]="page() >= totalPages()">
+    Siguiente
+  </button>
+
+  <label>
+    Tamaño de página:
+    <select (change)="onPageSize($event)" [value]="pageSize()">
+      <option [value]="5">5</option>
+      <option [value]="10">10</option>
+      <option [value]="20">20</option>
+    </select>
+  </label>
+</div>

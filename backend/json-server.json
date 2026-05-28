@@ -1,0 +1,5 @@
+{
+  "watch": true,
+  "port": 3000,
+  "routes": "routes.json"
+}

@@ -1,0 +1,16 @@
+/* Estilos básicos */
+header {
+  padding: 12px;
+  background: #f1f1f1;
+  margin-bottom: 20px;
+}
+
+nav a {
+  margin-right: 12px;
+  text-decoration: none;
+  color: #333;
+}
+
+main {
+  padding: 16px;
+}
