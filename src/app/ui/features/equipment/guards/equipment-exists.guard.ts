@@ -10,7 +10,7 @@ export const equipmentExistsGuard: CanActivateFn = async (route, state) => {
   if (!id) return router.createUrlTree(['/equipment']);
 
   try {
-   const found = await repo.getById(id);
+   const found = await repo.findById(id);
     return !!found || router.createUrlTree(['/equipment']);
   } catch {
     return router.createUrlTree(['/equipment']);

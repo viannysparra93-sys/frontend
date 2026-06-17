@@ -1,0 +1,48 @@
+<section class="maintenance-edit container">
+  <h2>Edit equipment</h2>
+
+  <form (ngSubmit)="onSubmit()" [formGroup]="form" *ngIf="loaded">
+    <!-- Mismos controles que en create -->
+    <label>
+      Asset tag
+      <input formControlName="assetTag" />
+    </label>
+
+    <label>
+      Serial number
+      <input formControlName="serialNumber" />
+    </label>
+
+    <label>
+      Model
+      <input formControlName="model" />
+    </label>
+
+    <label>
+      Type
+      <input formControlName="type" />
+    </label>
+
+    <label>
+      Status
+      <select formControlName="status">
+        <option value="active">Active</option>
+        <option value="maintenance">Maintenance</option>
+        <option value="retired">Retired</option>
+      </select>
+    </label>
+
+    <label>
+      Location
+      <input formControlName="location" />
+    </label>
+
+    <div class="actions">
+      <button type="submit" [disabled]="form.invalid">Save changes</button>
+      <a [routerLink]="['/maintenance']">Cancel</a>
+    </div>
+  </form>
+
+  <div *ngIf="!loaded && !error">Loading...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+</section>

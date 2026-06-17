@@ -1,49 +1,68 @@
+/* Contenedor principal del formulario */
 .container {
   max-width: 700px;
   margin: 2rem auto;
   padding: 1.5rem;
-  background: #f9f9f9;
+  background: #fdfdfd; /* color de fondo claro */
+  border: 1px solid #e0e0e0; /* borde suave */
   border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  /* TODO: probar con otro color de fondo más adelante */
 }
 
+/* Grid de dos columnas */
 .grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
 }
 
+/* Etiquetas y campos */
 label {
   display: flex;
   flex-direction: column;
-  font-weight: bold;
+  font-weight: 600;
   font-size: 0.95rem;
 }
 
 input, select {
   margin-top: 0.3rem;
   padding: 0.5rem;
-  border: 1px solid #ccc;
+  border: 1px solid #bbb;
   border-radius: 4px;
+  font-size: 0.9rem;
 }
 
+/* Sección de botones */
 .actions {
-  margin-top: 1rem;
+  margin-top: 1.5rem;
+  text-align: right;
 }
 
+/* Botón principal */
 button {
-  padding: 0.5rem 1rem;
-  background: #1976d2;
+  padding: 0.6rem 1.2rem;
+  background: #1976d2; /* azul estándar */
   color: white;
+  font-size: 0.9rem;
+  font-weight: 500;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-}
-button:disabled {
-  background: #aaa;
-  cursor: not-allowed;
+  transition: background 0.2s ease;
 }
 
+button:hover:not(:disabled) {
+  background: #1565c0;
+}
+
+button:disabled {
+  background: #bbb;
+  cursor: not-allowed;
+  /* TODO: hacer que el disabled se vea un poco más claro */
+}
+
+/* Mensajes de error y éxito */
 .error {
   color: #c00;
   font-size: 0.85rem;
@@ -51,7 +70,7 @@ button:disabled {
 }
 
 .success {
-  color: green;
+  color: #2e7d32; /* verde de éxito */
   font-size: 0.9rem;
   margin-top: 0.5rem;
 }

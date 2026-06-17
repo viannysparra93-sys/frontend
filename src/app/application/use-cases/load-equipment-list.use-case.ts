@@ -8,8 +8,9 @@ import { EquipmentRepository } from '../../domain/repositories/equipment.reposit
 export class LoadEquipmentListUseCase {
   constructor(private repository: EquipmentRepository) {}
 
-  //  Ejecuta la lógica: obtener todos los equipos del repositorio
+  // Ejecuta la lógica: obtener todos los equipos del repositorio
   async execute(): Promise<Equipment[]> {
-    return await this.repository.getAll();
+    //  usamos findAll(), que devuelve un array de equipos
+    return await this.repository.findAll();
   }
 }
